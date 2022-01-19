@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  expect-artist:
+    build: ./
+    command: ./wait-for-postgres.sh db-expect-artist ./expect-artist
+    ports:
+      - 80:80
+    depends_on:
+      - db-expect-artist
+    environment:
+      - DB_PASSWORD=${DB_PASSWORD}
+
+  db-expect-artist:
+    restart: always
+    image: postgres:13
+    volumes:
+    - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 5432:5432

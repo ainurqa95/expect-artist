@@ -1,0 +1,9 @@
+bot_url: "https://t.me/WaitArtistBot"
+
+messages:
+  response:
+    start: "Привет выбери группу/артиста на чьи события хочешь подписаться \n%s "
+    unknown_command: "Uknown command."
+
+  error:
+    default: "Что-то пошло не так"
