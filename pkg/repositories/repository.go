@@ -22,8 +22,18 @@ type ArtistRepository interface {
 }
 
 type MessageTypeRepository interface {
-	Create(messageType entities.TelegramMessageType) (int, error)
+	Create(messageType entities.MessageType) (int, error)
+	FindByCode(code string) (entities.MessageType, error)
 	ExistsData() bool
+}
+
+type MessageRepository interface {
+	Create(message entities.Message) (int, error)
+}
+
+type UserRepository interface {
+	Create(user entities.User) (int, error)
+	FindByTelegramId(telegramId int64) (entities.User, error)
 }
 
 type Repository struct {
@@ -31,6 +41,8 @@ type Repository struct {
 	GenreRepository
 	ArtistRepository
 	MessageTypeRepository
+	MessageRepository
+	UserRepository
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -40,5 +52,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		GenreRepository:       NewDbGenreRepository(baseDbRepository),
 		ArtistRepository:      NewDbArtistRepository(baseDbRepository),
 		MessageTypeRepository: NewDbMessageTypeRepository(baseDbRepository),
+		UserRepository:        NewDbUserRepository(baseDbRepository),
 	}
 }

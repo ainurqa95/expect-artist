@@ -16,10 +16,9 @@ func NewDbMessageTypeRepository(baseRepository *BaseDbRepository) *DbMessageType
 	return &DbMessageTypeRepository{db: baseRepository.db, baseRepository: baseRepository}
 }
 
-func (repository *DbMessageTypeRepository) Create(messageType entities.TelegramMessageType) (int, error) {
+func (repository *DbMessageTypeRepository) Create(messageType entities.MessageType) (int, error) {
 	var id int
-	query := fmt.Sprintf("INSERT INTO %s (name, code) values ($1, $2) RETURNING id", entities.TelegramMessageTypeTable)
-
+	query := fmt.Sprintf("INSERT INTO %s (name, code) values ($1, $2) RETURNING id", entities.MessageTypeTable)
 	row := repository.db.QueryRow(query, messageType.Name, messageType.Code)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
@@ -28,6 +27,15 @@ func (repository *DbMessageTypeRepository) Create(messageType entities.TelegramM
 	return id, nil
 }
 
+func (repository *DbMessageTypeRepository) FindByCode(code string) (entities.MessageType, error) {
+	var messageType entities.MessageType
+
+	query := fmt.Sprintf("SELECT * FROM %s WHERE code = $1 limit 1", entities.MessageTypeTable)
+	err := repository.db.Get(&messageType, query, code)
+
+	return messageType, err
+}
+
 func (repository *DbMessageTypeRepository) ExistsData() bool {
-	return repository.baseRepository.ExistsData(entities.TelegramMessageTypeTable)
+	return repository.baseRepository.ExistsData(entities.MessageTypeTable)
 }

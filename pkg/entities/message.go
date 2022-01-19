@@ -1,8 +1,8 @@
 package entities
 
-const TelegramMessageTable = "telegram_messages"
+const MessageTable = "telegram_messages"
 
-type TelegramMessage struct {
+type Message struct {
 	Id            int    `json:"id" db:"id"`
 	UserId        int    `json:"user_id" db:"user_id" binding:"required"`
 	ChatId        int64  `json:"name" db:"name" binding:"required"`

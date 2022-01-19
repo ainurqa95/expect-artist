@@ -7,6 +7,7 @@ import (
 	"github.com/ainurqa95/expect-artist/pkg/config"
 	"github.com/ainurqa95/expect-artist/pkg/repositories"
 	"github.com/ainurqa95/expect-artist/pkg/seeders"
+	"github.com/ainurqa95/expect-artist/pkg/services"
 	"github.com/ainurqa95/expect-artist/pkg/telegram"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/jmoiron/sqlx"
@@ -33,21 +34,26 @@ func main() {
 		log.Fatalf("failed to initialize db: %s", err.Error())
 	}
 	repos := repositories.NewRepository(db)
+	services := services.NewService(repos)
 	seeder := seeders.NewSeed(repos)
 	err = seeder.SeedData()
-
-	bot := InitTelegramBot(config)
+	// fmt.Println(config.Messages.Start)
+	// user, err := repos.UserRepository.FindByTelegramId(1234)
+	// telegramId := 123413
+	// user, err := services.UserManager.FindOrCreateUser(int64(telegramId))
+	// fmt.Println(user.Id, err)
+	bot := InitTelegramBot(config, services)
 	bot.Start()
 }
 
-func InitTelegramBot(config *config.Config) *telegram.Bot {
+func InitTelegramBot(config *config.Config, services *services.Service) *telegram.Bot {
 	bot, err := tgbotapi.NewBotAPI(config.BotToken)
 	if err != nil {
 		log.Fatal(err)
 	}
 	bot.Debug = true
 
-	return telegram.NewBot(bot, config.Messages)
+	return telegram.NewBot(bot, services, config.Messages)
 }
 
 func NewPostgresDB(cfg config.DB) (*sqlx.DB, error) {

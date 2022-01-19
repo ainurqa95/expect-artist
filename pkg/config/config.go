@@ -58,9 +58,9 @@ func unmarshal(cfg *Config) error {
 		return err
 	}
 
-	// if err := viper.UnmarshalKey("messages.response", &cfg.Messages.Responses); err != nil {
-	// 	return err
-	// }
+	if err := viper.UnmarshalKey("messages.response", &cfg.Messages.Responses); err != nil {
+		return err
+	}
 
 	// if err := viper.UnmarshalKey("messages.error", &cfg.Messages.Errors); err != nil {
 	// 	return err

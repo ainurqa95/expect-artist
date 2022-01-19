@@ -4,21 +4,25 @@ import (
 	"fmt"
 
 	"github.com/ainurqa95/expect-artist/pkg/config"
+	"github.com/ainurqa95/expect-artist/pkg/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 type Bot struct {
 	client   *tgbotapi.BotAPI
+	services *services.Service
 	messages config.Messages
 }
 
 func NewBot(
 	client *tgbotapi.BotAPI,
+	services *services.Service,
 	messages config.Messages,
 ) *Bot {
 	return &Bot{
 		client:   client,
 		messages: messages,
+		services: services,
 	}
 }
 

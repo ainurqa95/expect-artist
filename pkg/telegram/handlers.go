@@ -18,24 +18,24 @@ func (bot *Bot) handleCommand(message *tgbotapi.Message) error {
 }
 
 func (bot *Bot) handleStartCommand(message *tgbotapi.Message) error {
-	numericKeyboard := tgbotapi.NewInlineKeyboardMarkup(
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonURL("1.com", "http://1.com"),
-			tgbotapi.NewInlineKeyboardButtonData("2", "2"),
-			tgbotapi.NewInlineKeyboardButtonData("3", "3"),
-		),
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("4", "4"),
-			tgbotapi.NewInlineKeyboardButtonData("5", "5"),
-			tgbotapi.NewInlineKeyboardButtonData("6", "6"),
-		),
-	)
+	// numericKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+	// 	tgbotapi.NewInlineKeyboardRow(
+	// 		tgbotapi.NewInlineKeyboardButtonURL("1.com", "http://1.com"),
+	// 		tgbotapi.NewInlineKeyboardButtonData("2", "2"),
+	// 		tgbotapi.NewInlineKeyboardButtonData("3", "3"),
+	// 	),
+	// 	tgbotapi.NewInlineKeyboardRow(
+	// 		tgbotapi.NewInlineKeyboardButtonData("4", "4"),
+	// 		tgbotapi.NewInlineKeyboardButtonData("5", "5"),
+	// 		tgbotapi.NewInlineKeyboardButtonData("6", "6"),
+	// 	),
+	// )
 
-	msg := tgbotapi.NewMessage(message.Chat.ID, "kek")
+	msg := tgbotapi.NewMessage(message.Chat.ID, bot.messages.Start)
 
 	// switch message.Text {
 	// case "open":
-	msg.ReplyMarkup = numericKeyboard
+	// msg.ReplyMarkup = numericKeyboard
 
 	// }
 	_, err := bot.client.Send(msg)
