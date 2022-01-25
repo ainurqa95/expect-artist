@@ -12,12 +12,18 @@ type Messages struct {
 }
 
 type Responses struct {
-	Start          string `mapstructure:"start"`
-	UnknownCommand string `mapstructure:"unknown_command"`
+	Start                        string `mapstructure:"start"`
+	Search                       string `mapstructure:"search"`
+	SetUpCity                    string `mapstructure:"set_up_city"`
+	SelectArtist                 string `mapstructure:"select_artist"`
+	UnknownCommand               string `mapstructure:"unknown_command"`
+	SubscriptionAlreadyExists    string `mapstructure:"subscription_already_exists"`
+	SubscriptionSuccesfullyAdded string `mapstructure:"subsscription_succesfully_added"`
 }
 
 type Errors struct {
-	Default string `mapstructure:"default"`
+	Default        string `mapstructure:"default"`
+	ArtistNotFound string `mapstructure:"unknown_artist"`
 }
 
 type DB struct {
@@ -62,9 +68,9 @@ func unmarshal(cfg *Config) error {
 		return err
 	}
 
-	// if err := viper.UnmarshalKey("messages.error", &cfg.Messages.Errors); err != nil {
-	// 	return err
-	// }
+	if err := viper.UnmarshalKey("messages.error", &cfg.Messages.Errors); err != nil {
+		return err
+	}
 
 	return nil
 }

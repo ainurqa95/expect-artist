@@ -37,11 +37,7 @@ func main() {
 	services := services.NewService(repos)
 	seeder := seeders.NewSeed(repos)
 	err = seeder.SeedData()
-	// fmt.Println(config.Messages.Start)
-	// user, err := repos.UserRepository.FindByTelegramId(1234)
-	// telegramId := 123413
-	// user, err := services.UserManager.FindOrCreateUser(int64(telegramId))
-	// fmt.Println(user.Id, err)
+
 	bot := InitTelegramBot(config, services)
 	bot.Start()
 }

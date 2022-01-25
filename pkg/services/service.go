@@ -10,17 +10,31 @@ type UserManager interface {
 }
 
 type MessageManager interface {
-	SaveMessage(messageTypeCode string, chatId int64, userId int) (entities.Message, error)
+	SaveMessage(messageTypeCode string, chatId int64, userId int, text string) (entities.Message, error)
+	FindLastMessage(chatId int64) (entities.Message, error)
+}
+
+type ArtistManager interface {
+	SearchArtistByName(artistName string) ([]entities.Artist, error)
+}
+
+type SubscriptionManager interface {
+	ExistsSubscriptionBy(artistId int, userId int) bool
+	Create(artistId int, userId int) error
 }
 
 type Service struct {
 	UserManager
 	MessageManager
+	ArtistManager
+	SubscriptionManager
 }
 
 func NewService(repos *repositories.Repository) *Service {
 	return &Service{
-		UserManager:    NewUserService(repos.UserRepository),
-		MessageManager: NewMessageService(repos.MessageRepository, repos.MessageTypeRepository),
+		UserManager:         NewUserService(repos.UserRepository),
+		MessageManager:      NewMessageService(repos.MessageRepository, repos.MessageTypeRepository),
+		ArtistManager:       NewArtistService(repos.ArtistRepository),
+		SubscriptionManager: NewSubscriptionService(repos.SubscriptionRepository),
 	}
 }

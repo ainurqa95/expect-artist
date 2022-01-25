@@ -49,6 +49,15 @@ func (repository *DbArtistRepository) attachGenres(transaction *sql.Tx, artistId
 	return artistId, transaction.Commit()
 }
 
+func (repository *DbArtistRepository) SearchArtistByName(artistName string) ([]entities.Artist, error) {
+
+	query := fmt.Sprintf("SELECT * FROM %s WHERE LOWER(name) like LOWER($1)", entities.ArtistTable)
+	var artists []entities.Artist
+	err := repository.db.Select(&artists, query, "%"+artistName+"%")
+
+	return artists, err
+}
+
 func (repository *DbArtistRepository) ExistsData() bool {
 	return repository.baseRepository.ExistsData(entities.ArtistTable)
 }

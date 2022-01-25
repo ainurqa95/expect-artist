@@ -12,7 +12,7 @@ func (seed *Seed) SeedGenres() error {
 	if existsData {
 		return nil
 	}
-	// return nil
+
 	return seed.saveGenres()
 }
 

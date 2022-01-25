@@ -1,9 +1,8 @@
 package telegram
 
 import (
-	"fmt"
-
 	"github.com/ainurqa95/expect-artist/pkg/config"
+	"github.com/ainurqa95/expect-artist/pkg/entities"
 	"github.com/ainurqa95/expect-artist/pkg/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -41,13 +40,15 @@ func (bot *Bot) initUpdates() tgbotapi.UpdatesChannel {
 
 func (bot *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 	for update := range updates {
-		if update.Message == nil {
+		if update.CallbackQuery != nil {
+			err := bot.handleCallback(update.CallbackQuery)
+			if err != nil {
+				bot.handleError(update.CallbackQuery.From.ID, err)
+			}
 			continue
 		}
-
 		if update.Message.IsCommand() {
 			err := bot.handleCommand(update.Message)
-			fmt.Println(err)
 			if err != nil {
 				bot.handleError(update.Message.Chat.ID, err)
 			}
@@ -59,4 +60,59 @@ func (bot *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 			bot.handleError(update.Message.Chat.ID, err)
 		}
 	}
+}
+
+func (bot *Bot) handleCommand(message *tgbotapi.Message) error {
+	switch message.Command() {
+	case startCommand:
+		return bot.handleStartCommand(message)
+	case searchCommand:
+		return bot.handleSearchCommand(message)
+	case setUpCityCommand:
+		return bot.handleSetUpCityCommand(message)
+	default:
+		return bot.handleUnknownCommandOrMessage(message)
+	}
+}
+
+func (bot *Bot) handleMessage(message *tgbotapi.Message) error {
+	chatId := message.Chat.ID
+	previousMessage, err := bot.services.MessageManager.FindLastMessage(chatId)
+	if err != nil {
+		return err
+	}
+	switch previousMessage.MessageType.Code {
+	case entities.SearchArtistCommand:
+		return bot.handleSearchArtist(message)
+	case entities.SetUpCityCommand:
+		return bot.handleSearchCity(message)
+	default:
+		return bot.handleUnknownCommandOrMessage(message)
+	}
+}
+
+func (bot *Bot) handleCallback(callbackQuery *tgbotapi.CallbackQuery) error {
+	previousMessage, err := bot.services.MessageManager.FindLastMessage(callbackQuery.From.ID)
+	if err != nil {
+		return err
+	}
+	switch previousMessage.MessageType.Code {
+	case entities.AfterSearchArtistCommand:
+		return bot.handleSubsribeArtist(callbackQuery)
+	case entities.AfterSetUpCityCommand:
+		return bot.handleSetUpCity(callbackQuery)
+	default:
+		return callbackHandlerNotFound
+	}
+}
+
+func (bot *Bot) saveMessageToStorage(chatId int64, textMessage string, messageTypeCode string) (entities.User, error) {
+	user, err := bot.services.UserManager.FindOrCreateUser(chatId)
+	if err != nil {
+		return user, err
+	}
+
+	_, err = bot.services.MessageManager.SaveMessage(messageTypeCode, chatId, user.Id, textMessage)
+
+	return user, err
 }

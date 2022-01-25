@@ -18,6 +18,7 @@ type GenreRepository interface {
 
 type ArtistRepository interface {
 	Create(artist entities.Artist, genres []entities.Genre) (int, error)
+	SearchArtistByName(artistName string) ([]entities.Artist, error)
 	ExistsData() bool
 }
 
@@ -29,11 +30,17 @@ type MessageTypeRepository interface {
 
 type MessageRepository interface {
 	Create(message entities.Message) (int, error)
+	FindLastMessage(chatId int64) (entities.Message, error)
 }
 
 type UserRepository interface {
 	Create(user entities.User) (int, error)
 	FindByTelegramId(telegramId int64) (entities.User, error)
+}
+
+type SubscriptionRepository interface {
+	ExistsSubscriptionBy(artistId int, userId int) bool
+	Create(artistId int, userId int) error
 }
 
 type Repository struct {
@@ -43,15 +50,18 @@ type Repository struct {
 	MessageTypeRepository
 	MessageRepository
 	UserRepository
+	SubscriptionRepository
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	baseDbRepository := NewBaseDbRepository(db)
 	return &Repository{
-		CityRepository:        NewDbCityRepository(baseDbRepository),
-		GenreRepository:       NewDbGenreRepository(baseDbRepository),
-		ArtistRepository:      NewDbArtistRepository(baseDbRepository),
-		MessageTypeRepository: NewDbMessageTypeRepository(baseDbRepository),
-		UserRepository:        NewDbUserRepository(baseDbRepository),
+		CityRepository:         NewDbCityRepository(baseDbRepository),
+		GenreRepository:        NewDbGenreRepository(baseDbRepository),
+		ArtistRepository:       NewDbArtistRepository(baseDbRepository),
+		MessageTypeRepository:  NewDbMessageTypeRepository(baseDbRepository),
+		UserRepository:         NewDbUserRepository(baseDbRepository),
+		MessageRepository:      NewDbMessageRepository(baseDbRepository),
+		SubscriptionRepository: NewDbSubscriptionRepository(baseDbRepository),
 	}
 }

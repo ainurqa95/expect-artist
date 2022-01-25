@@ -35,6 +35,7 @@ CREATE TABLE artist_genre
     artist_id int references artists (id) on delete cascade not null,
     genre_id  int references genres (id) on delete cascade not null
 );
+create unique index artist_genre_idx on artist_genre using btree (artist_id, genre_id);    
 
 CREATE TABLE events
 (
@@ -51,6 +52,7 @@ CREATE TABLE subscriptions
     artist_id int references artists (id) on delete cascade not null,
     user_id  int references users (id) on delete cascade not null
 );
+create unique index subscriptions_idx on subscriptions using btree (artist_id, user_id);    
 
 CREATE TABLE notification_types
 (
