@@ -33,3 +33,9 @@ func (userService *UserService) FindOrCreateUser(telegramId int64) (entities.Use
 
 	return toCreateUser, err
 }
+
+func (userService *UserService) UpdateCity(user entities.User, cityId int) error {
+	user.CityId = sql.NullInt32{Int32: int32(cityId), Valid: true}
+
+	return userService.userRepository.Update(user)
+}

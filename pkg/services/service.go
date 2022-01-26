@@ -7,6 +7,7 @@ import (
 
 type UserManager interface {
 	FindOrCreateUser(telegramId int64) (entities.User, error)
+	UpdateCity(user entities.User, cityId int) error
 }
 
 type MessageManager interface {
@@ -23,11 +24,16 @@ type SubscriptionManager interface {
 	Create(artistId int, userId int) error
 }
 
+type CityManager interface {
+	SearchCityByName(cityName string) ([]entities.City, error)
+}
+
 type Service struct {
 	UserManager
 	MessageManager
 	ArtistManager
 	SubscriptionManager
+	CityManager
 }
 
 func NewService(repos *repositories.Repository) *Service {
@@ -36,5 +42,6 @@ func NewService(repos *repositories.Repository) *Service {
 		MessageManager:      NewMessageService(repos.MessageRepository, repos.MessageTypeRepository),
 		ArtistManager:       NewArtistService(repos.ArtistRepository),
 		SubscriptionManager: NewSubscriptionService(repos.SubscriptionRepository),
+		CityManager:         NewCityService(repos.CityRepository),
 	}
 }

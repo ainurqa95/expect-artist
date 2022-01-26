@@ -10,6 +10,7 @@ import (
 var (
 	invalidUrlError         = errors.New("Url is invalid")
 	artistNotFound          = errors.New("Artist not found")
+	cityNotFound            = errors.New("City not found")
 	callbackHandlerNotFound = errors.New("callback not found")
 )
 
@@ -20,6 +21,8 @@ func (bot *Bot) handleError(chatID int64, err error) {
 	switch err {
 	case artistNotFound:
 		messageText = bot.messages.Errors.ArtistNotFound
+	case cityNotFound:
+		messageText = bot.messages.Errors.CityNotFound
 	default:
 		messageText = bot.messages.Errors.Default
 	}

@@ -16,14 +16,17 @@ type Responses struct {
 	Search                       string `mapstructure:"search"`
 	SetUpCity                    string `mapstructure:"set_up_city"`
 	SelectArtist                 string `mapstructure:"select_artist"`
+	SelectCity                   string `mapstructure:"select_city"`
 	UnknownCommand               string `mapstructure:"unknown_command"`
 	SubscriptionAlreadyExists    string `mapstructure:"subscription_already_exists"`
 	SubscriptionSuccesfullyAdded string `mapstructure:"subsscription_succesfully_added"`
+	CitySettingUpIsSuccesfull    string `mapstructure:"city_setting_up_is_succesfull"`
 }
 
 type Errors struct {
 	Default        string `mapstructure:"default"`
 	ArtistNotFound string `mapstructure:"unknown_artist"`
+	CityNotFound   string `mapstructure:"unknown_city"`
 }
 
 type DB struct {

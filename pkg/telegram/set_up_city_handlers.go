@@ -9,45 +9,57 @@ import (
 
 func (bot *Bot) handleSearchCity(message *tgbotapi.Message) error {
 
-	artistName := message.Text
+	cityName := message.Text
 
-	artistsForSelect, err := bot.services.ArtistManager.SearchArtistByName(artistName)
+	citiesForSelect, err := bot.services.CityManager.SearchCityByName(cityName)
 
-	if len(artistsForSelect) == 0 || err != nil {
-		return artistNotFound
+	if len(citiesForSelect) == 0 || err != nil {
+		return cityNotFound
 	}
 
 	msg := tgbotapi.NewMessage(message.Chat.ID, bot.messages.Responses.SelectArtist)
 
-	msg.ReplyMarkup = bot.defineOptionsForSelect(artistsForSelect)
+	msg.ReplyMarkup = bot.defineOptionsForSelectCity(citiesForSelect)
 
 	if _, err = bot.client.Send(msg); err != nil {
 		return err
 	}
 
-	_, err = bot.saveMessageToStorage(message.Chat.ID, artistName, entities.AfterSearchArtistCommand)
+	_, err = bot.saveMessageToStorage(message.Chat.ID, cityName, entities.AfterSetUpCityCommand)
 
 	return err
 }
 
+func (bot *Bot) defineOptionsForSelectCity(cities []entities.City) tgbotapi.InlineKeyboardMarkup {
+	var buttons []tgbotapi.InlineKeyboardButton
+	for _, city := range cities {
+		buttons = append(buttons, tgbotapi.NewInlineKeyboardButtonData(city.Name, strconv.Itoa(city.Id)))
+	}
+
+	return tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(buttons...),
+	)
+}
+
 func (bot *Bot) handleSetUpCity(callbackQuery *tgbotapi.CallbackQuery) error {
 	chatId := callbackQuery.From.ID
-	user, err := bot.saveMessageToStorage(chatId, callbackQuery.Data, entities.ChosedArtist)
+	user, err := bot.saveMessageToStorage(chatId, callbackQuery.Data, entities.ChosedCity)
 	if err != nil {
 		return err
 	}
 
-	artistId, err := strconv.Atoi(callbackQuery.Data)
+	cityId, err := strconv.Atoi(callbackQuery.Data)
 	if err != nil {
 		return err
 	}
 
-	message, err := bot.subscribe(artistId, user.Id)
+	err = bot.services.UserManager.UpdateCity(user, cityId)
+
 	if err != nil {
 		return err
 	}
 
-	msg := tgbotapi.NewMessage(chatId, message)
+	msg := tgbotapi.NewMessage(chatId, bot.messages.Responses.CitySettingUpIsSuccesfull)
 
 	if _, err = bot.client.Send(msg); err != nil {
 		return err

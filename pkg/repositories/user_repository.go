@@ -27,11 +27,20 @@ func (repository *DbUserRepository) FindByTelegramId(telegramId int64) (entities
 func (repository *DbUserRepository) Create(user entities.User) (int, error) {
 	var id int
 	query := fmt.Sprintf("INSERT INTO %s (email, password_hash, telegram_id, city_id) values ($1, $2, $3, $4) RETURNING id", entities.UsersTable)
-	fmt.Println("telegram id", user.TelegramId)
 	row := repository.db.QueryRow(query, user.Email, user.PasswordHash, user.TelegramId, user.CityId)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
 
 	return id, nil
+}
+
+func (repository *DbUserRepository) Update(user entities.User) error {
+
+	query := fmt.Sprintf("UPDATE %s SET email=$1, password_hash=$2, telegram_id=$3, city_id=$4 where id=$5", entities.UsersTable)
+	fmt.Println(query)
+	_, err := repository.db.Exec(query, user.Email, user.PasswordHash, user.TelegramId, user.CityId, user.Id)
+
+	return err
+
 }

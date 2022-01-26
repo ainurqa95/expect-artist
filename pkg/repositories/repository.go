@@ -7,6 +7,7 @@ import (
 
 type CityRepository interface {
 	Create(city entities.City) (int, error)
+	SearchCityByName(cityName string) ([]entities.City, error)
 	ExistsData() bool
 }
 
@@ -36,6 +37,7 @@ type MessageRepository interface {
 type UserRepository interface {
 	Create(user entities.User) (int, error)
 	FindByTelegramId(telegramId int64) (entities.User, error)
+	Update(user entities.User) error
 }
 
 type SubscriptionRepository interface {

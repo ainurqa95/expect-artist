@@ -31,3 +31,12 @@ func (cityRepository *DbCityRepository) Create(city entities.City) (int, error) 
 func (cityRepository *DbCityRepository) ExistsData() bool {
 	return cityRepository.baseRepository.ExistsData(entities.CitiesTable)
 }
+
+func (cityRepository *DbCityRepository) SearchCityByName(cityName string) ([]entities.City, error) {
+
+	query := fmt.Sprintf("SELECT * FROM %s WHERE LOWER(name) like LOWER($1)", entities.CitiesTable)
+	var cities []entities.City
+	err := cityRepository.db.Select(&cities, query, "%"+cityName+"%")
+
+	return cities, err
+}

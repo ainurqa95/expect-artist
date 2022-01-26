@@ -37,7 +37,6 @@ func main() {
 	services := services.NewService(repos)
 	seeder := seeders.NewSeed(repos)
 	err = seeder.SeedData()
-
 	bot := InitTelegramBot(config, services)
 	bot.Start()
 }
