@@ -7,11 +7,12 @@ import (
 
 type UserManager interface {
 	FindOrCreateUser(telegramId int64) (entities.User, error)
+	FindUserSubscriptions(user entities.User) ([]entities.Artist, error)
 	UpdateCity(user entities.User, cityId int) error
 }
 
 type MessageManager interface {
-	SaveMessage(messageTypeCode string, chatId int64, userId int, text string) (entities.Message, error)
+	SaveUserMessageToStorage(chatId int64, textMessage string, messageTypeCode string) (entities.User, error)
 	FindLastMessage(chatId int64) (entities.Message, error)
 }
 
@@ -28,20 +29,29 @@ type CityManager interface {
 	SearchCityByName(cityName string) ([]entities.City, error)
 }
 
+type EventManager interface {
+	FindComingEvents(cityId int, artists []entities.Artist) ([]entities.Event, error)
+	PurifyEventsToShow(events []entities.Event) []string
+	Create(event entities.Event) (int, error)
+}
+
 type Service struct {
 	UserManager
 	MessageManager
 	ArtistManager
 	SubscriptionManager
 	CityManager
+	EventManager
 }
 
 func NewService(repos *repositories.Repository) *Service {
+	userService := NewUserService(repos.UserRepository)
 	return &Service{
-		UserManager:         NewUserService(repos.UserRepository),
-		MessageManager:      NewMessageService(repos.MessageRepository, repos.MessageTypeRepository),
+		UserManager:         userService,
+		MessageManager:      NewMessageService(userService, repos.MessageRepository, repos.MessageTypeRepository),
 		ArtistManager:       NewArtistService(repos.ArtistRepository),
 		SubscriptionManager: NewSubscriptionService(repos.SubscriptionRepository),
 		CityManager:         NewCityService(repos.CityRepository),
+		EventManager:        NewEventService(repos.EventRepository),
 	}
 }

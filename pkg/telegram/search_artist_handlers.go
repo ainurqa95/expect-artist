@@ -25,7 +25,7 @@ func (bot *Bot) handleSearchArtist(message *tgbotapi.Message) error {
 		return err
 	}
 
-	_, err = bot.saveMessageToStorage(message.Chat.ID, artistName, entities.AfterSearchArtistCommand)
+	_, err = bot.services.MessageManager.SaveUserMessageToStorage(message.Chat.ID, artistName, entities.AfterSearchArtistCommand)
 
 	return err
 }
@@ -43,7 +43,7 @@ func (bot *Bot) defineOptionsForSelect(artists []entities.Artist) tgbotapi.Inlin
 
 func (bot *Bot) handleSubsribeArtist(callbackQuery *tgbotapi.CallbackQuery) error {
 	chatId := callbackQuery.From.ID
-	user, err := bot.saveMessageToStorage(chatId, callbackQuery.Data, entities.ChosedArtist)
+	user, err := bot.services.MessageManager.SaveUserMessageToStorage(chatId, callbackQuery.Data, entities.ChosedArtist)
 	if err != nil {
 		return err
 	}

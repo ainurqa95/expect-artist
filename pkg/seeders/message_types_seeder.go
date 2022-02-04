@@ -41,6 +41,7 @@ func (seed *Seed) getMessageTypes() []map[string]string {
 		{"code": entities.AfterSetUpCityCommand, "name": "Сообщение после нажатия /set_up_city"},
 		{"code": entities.ChosedCity, "name": "Сообщение выбран город"},
 		{"code": entities.OtherMessageCommand, "name": "Другое сообщение или команда"},
+		{"code": entities.EventsCommand, "name": "Команда /events"},
 	}
 
 }

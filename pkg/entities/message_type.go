@@ -5,6 +5,7 @@ const (
 	AfterSearchArtistCommand = "after_search_artist_comand"
 	ChosedArtist             = "chosed_artist"
 	SetUpCityCommand         = "set_up_city_command"
+	EventsCommand            = "events_command"
 	AfterSetUpCityCommand    = "after_set_up_city_command"
 	ChosedCity               = "chosed_city"
 	OtherMessageCommand      = "other_command_or_message"

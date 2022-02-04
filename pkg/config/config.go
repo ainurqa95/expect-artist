@@ -1,8 +1,6 @@
 package config
 
 import (
-	"os"
-
 	"github.com/spf13/viper"
 )
 
@@ -13,7 +11,9 @@ type Messages struct {
 
 type Responses struct {
 	Start                        string `mapstructure:"start"`
+	Help                         string `mapstructure:"start"`
 	Search                       string `mapstructure:"search"`
+	ShowEvents                   string `mapstructure:"show_events"`
 	SetUpCity                    string `mapstructure:"set_up_city"`
 	SelectArtist                 string `mapstructure:"select_artist"`
 	SelectCity                   string `mapstructure:"select_city"`
@@ -24,9 +24,12 @@ type Responses struct {
 }
 
 type Errors struct {
-	Default        string `mapstructure:"default"`
-	ArtistNotFound string `mapstructure:"unknown_artist"`
-	CityNotFound   string `mapstructure:"unknown_city"`
+	Default               string `mapstructure:"default"`
+	ArtistNotFound        string `mapstructure:"unknown_artist"`
+	CityNotFound          string `mapstructure:"unknown_city"`
+	CityHasNotBeenSet     string `mapstructure:"city_has_not_been_set"`
+	ArtistsHaveNotBeenSet string `mapstructure:"artists_have_not_been_set"`
+	EventsNotFound        string `mapstructure:"events_not_found"`
 }
 
 type DB struct {
@@ -79,13 +82,6 @@ func unmarshal(cfg *Config) error {
 }
 
 func fromEnv(cfg *Config) error {
-	os.Setenv("DB_NAME", "expect_artist")
-	os.Setenv("DB_USERNAME", "default")
-	os.Setenv("DB_PASSWORD", "secret")
-	// os.Setenv("DB_HOST", "db-expect-artist")
-	os.Setenv("TOKEN", "5098762490:AAGNP4Ln0BLhelLfhSSgAe254ZaIWKimuaM")
-	os.Setenv("DB_HOST", "localhost")
-	os.Setenv("DB_PORT", "5432")
 
 	if err := viper.BindEnv("token"); err != nil {
 		return err

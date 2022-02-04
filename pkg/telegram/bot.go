@@ -7,6 +7,14 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
+const (
+	startCommand     = "start"
+	searchCommand    = "search"
+	setUpCityCommand = "set_up_city"
+	eventsCommand    = "events"
+	helpCommand      = "help"
+)
+
 type Bot struct {
 	client   *tgbotapi.BotAPI
 	services *services.Service
@@ -70,6 +78,11 @@ func (bot *Bot) handleCommand(message *tgbotapi.Message) error {
 		return bot.handleSearchCommand(message)
 	case setUpCityCommand:
 		return bot.handleSetUpCityCommand(message)
+	case eventsCommand:
+		return bot.handleEventsCommand(message)
+	case helpCommand:
+		return bot.handleStartCommand(message)
+
 	default:
 		return bot.handleUnknownCommandOrMessage(message)
 	}
@@ -101,18 +114,9 @@ func (bot *Bot) handleCallback(callbackQuery *tgbotapi.CallbackQuery) error {
 		return bot.handleSubsribeArtist(callbackQuery)
 	case entities.AfterSetUpCityCommand:
 		return bot.handleSetUpCity(callbackQuery)
+	case entities.ChosedArtist:
+		return bot.handleSubsribeArtist(callbackQuery)
 	default:
 		return callbackHandlerNotFound
 	}
-}
-
-func (bot *Bot) saveMessageToStorage(chatId int64, textMessage string, messageTypeCode string) (entities.User, error) {
-	user, err := bot.services.UserManager.FindOrCreateUser(chatId)
-	if err != nil {
-		return user, err
-	}
-
-	_, err = bot.services.MessageManager.SaveMessage(messageTypeCode, chatId, user.Id, textMessage)
-
-	return user, err
 }

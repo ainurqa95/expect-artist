@@ -37,12 +37,19 @@ type MessageRepository interface {
 type UserRepository interface {
 	Create(user entities.User) (int, error)
 	FindByTelegramId(telegramId int64) (entities.User, error)
+	FindUserSubscriptions(user entities.User) ([]entities.Artist, error)
 	Update(user entities.User) error
 }
 
 type SubscriptionRepository interface {
 	ExistsSubscriptionBy(artistId int, userId int) bool
 	Create(artistId int, userId int) error
+}
+
+type EventRepository interface {
+	Create(event entities.Event) (int, error)
+	FindEventsBy(city entities.City, artists []entities.Artist, maxHappenAt string) ([]entities.Event, error)
+	ExistsData() bool
 }
 
 type Repository struct {
@@ -53,6 +60,7 @@ type Repository struct {
 	MessageRepository
 	UserRepository
 	SubscriptionRepository
+	EventRepository
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -65,5 +73,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		UserRepository:         NewDbUserRepository(baseDbRepository),
 		MessageRepository:      NewDbMessageRepository(baseDbRepository),
 		SubscriptionRepository: NewDbSubscriptionRepository(baseDbRepository),
+		EventRepository:        NewDbEventRepository(baseDbRepository),
 	}
 }

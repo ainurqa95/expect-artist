@@ -24,7 +24,7 @@ func (repository *DbArtistRepository) Create(artist entities.Artist, genres []en
 	}
 
 	var artistId int
-	createArtistQuery := fmt.Sprintf("INSERT INTO %s (name, description, sorting) values ($1, $2, $3) RETURNING id", entities.ArtistTable)
+	createArtistQuery := fmt.Sprintf("INSERT INTO %s (name, description, sorting) VALUES ($1, $2, $3) RETURNING id", entities.ArtistTable)
 
 	row := transaction.QueryRow(createArtistQuery, artist.Name, artist.Description, artist.Sorting)
 	err = row.Scan(&artistId)
@@ -38,7 +38,7 @@ func (repository *DbArtistRepository) Create(artist entities.Artist, genres []en
 
 func (repository *DbArtistRepository) attachGenres(transaction *sql.Tx, artistId int, genres []entities.Genre) (int, error) {
 	for _, genre := range genres {
-		query := fmt.Sprintf("INSERT INTO %s (artist_id, genre_id) values ($1, $2)", entities.ArtistGenreTable)
+		query := fmt.Sprintf("INSERT INTO %s (artist_id, genre_id) VALUES ($1, $2)", entities.ArtistGenreTable)
 		_, err := transaction.Exec(query, artistId, genre.Id)
 		if err != nil {
 			transaction.Rollback()

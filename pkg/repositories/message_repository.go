@@ -32,8 +32,8 @@ func (repository *DbMessageRepository) Create(message entities.Message) (int, er
 
 func (repository *DbMessageRepository) FindLastMessage(chatId int64) (entities.Message, error) {
 	var message entities.Message
-	query := fmt.Sprintf(`select tg.*, tmt.code "tmt.code", tmt.name "tmt.name"
-	 from %s tg join %s tmt on tg.message_type_id = tmt.id  where tg.chat_id=$1 order by tg.id desc limit 1;`, entities.MessageTable, entities.MessageTypeTable)
+	query := fmt.Sprintf(`SELECT tg.*, tmt.code "tmt.code", tmt.name "tmt.name"
+	 FROM %s tg JOIN %s tmt ON tg.message_type_id = tmt.id  WHERE tg.chat_id=$1 ORDER BY tg.id DESC LIMIT 1;`, entities.MessageTable, entities.MessageTypeTable)
 	err := repository.db.Get(&message, query, chatId)
 
 	return message, err

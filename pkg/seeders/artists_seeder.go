@@ -1,8 +1,6 @@
 package seeders
 
 import (
-	"fmt"
-
 	"github.com/ainurqa95/expect-artist/pkg/entities"
 )
 
@@ -25,7 +23,7 @@ func (seed *Seed) saveArtists() error {
 			Sorting:     0,
 		}
 		genres := artist["genres"].([]string)
-		fmt.Println(genres)
+
 		genresEntites, err := seed.repositories.GenreRepository.GetByCodes(genres)
 		if err != nil {
 			return err
@@ -47,7 +45,7 @@ func (seed *Seed) getArtists() []map[string]interface{} {
 			"genres": []string{"punk", "russian_rock"},
 		},
 		{
-			"name": "Би - 2", "description": "Король и Шут» (сокращённо «КиШ») — российская хоррор-панк-группа из Санкт-Петербурга.",
+			"name": "Би - 2", "description": "Би-2 — советская, далее российская рок-группа, образованная в 1988 году в Бобруйске.",
 			"genres": []string{"russian_rock"},
 		},
 		{
@@ -59,7 +57,7 @@ func (seed *Seed) getArtists() []map[string]interface{} {
 			"genres": []string{"punk", "russian_rock"},
 		},
 		{
-			"name": "Lumen", "description": "Российская рок-группа из Уфы, основанная в 1998 году ",
+			"name": "Люмен (Lumen)", "description": "Российская рок-группа из Уфы, основанная в 1998 году ",
 			"genres": []string{"alternative", "russian_rock"},
 		},
 		{

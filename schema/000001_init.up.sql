@@ -41,10 +41,12 @@ CREATE TABLE events
 (
     id          serial       not null unique,
     title       varchar(255) not null,
-    description varchar(255) not null,
+    place_name  varchar(255),
+    description text not null,
     happen_at   timestamp with time zone default CURRENT_TIMESTAMP not null,
     buy_link    varchar(500) default null,
-    artist_id   int references artists (id) on delete cascade      not null
+    artist_id   int references artists (id) on delete cascade      not null,
+    city_id     int references cities (id) on delete cascade not null
 );
 
 CREATE TABLE subscriptions

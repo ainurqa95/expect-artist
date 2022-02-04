@@ -16,3 +16,7 @@ type User struct {
 func (user *User) SetId(id int) {
 	user.Id = id
 }
+
+func (user *User) GetCityId() int {
+	return int(user.CityId.Int32)
+}

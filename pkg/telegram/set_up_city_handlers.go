@@ -25,7 +25,7 @@ func (bot *Bot) handleSearchCity(message *tgbotapi.Message) error {
 		return err
 	}
 
-	_, err = bot.saveMessageToStorage(message.Chat.ID, cityName, entities.AfterSetUpCityCommand)
+	_, err = bot.services.MessageManager.SaveUserMessageToStorage(message.Chat.ID, cityName, entities.AfterSetUpCityCommand)
 
 	return err
 }
@@ -43,7 +43,7 @@ func (bot *Bot) defineOptionsForSelectCity(cities []entities.City) tgbotapi.Inli
 
 func (bot *Bot) handleSetUpCity(callbackQuery *tgbotapi.CallbackQuery) error {
 	chatId := callbackQuery.From.ID
-	user, err := bot.saveMessageToStorage(chatId, callbackQuery.Data, entities.ChosedCity)
+	user, err := bot.services.MessageManager.SaveUserMessageToStorage(chatId, callbackQuery.Data, entities.ChosedCity)
 	if err != nil {
 		return err
 	}

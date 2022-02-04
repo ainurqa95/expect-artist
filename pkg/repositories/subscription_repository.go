@@ -22,7 +22,7 @@ func NewDbSubscriptionRepository(baseDbRepository *BaseDbRepository) *DbSubsript
 func (repository *DbSubsriptionRepository) ExistsSubscriptionBy(artistId int, userId int) bool {
 	var subscription entities.Subscription
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE artist_id = $1 and user_id = $2 limit 1", entities.SubscriptionTable)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE artist_id = $1 and user_id = $2 LIMIT 1", entities.SubscriptionTable)
 	err := repository.db.Get(&subscription, query, artistId, userId)
 
 	if err != nil || subscription.ArtistId == 0 || subscription.UserId == 0 {
@@ -37,7 +37,7 @@ func (repository *DbSubsriptionRepository) Create(artistId int, userId int) erro
 		ArtistId: artistId,
 		UserId:   userId,
 	}
-	query := fmt.Sprintf("INSERT INTO %s (artist_id, user_id) values (:artist_id, :user_id)", entities.SubscriptionTable)
+	query := fmt.Sprintf("INSERT INTO %s (artist_id, user_id) VALUES (:artist_id, :user_id)", entities.SubscriptionTable)
 	_, err := repository.db.NamedExec(query, subscription)
 
 	return err

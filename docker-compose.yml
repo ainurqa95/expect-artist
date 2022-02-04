@@ -3,22 +3,38 @@ version: '3.8'
 services:
   expect-artist:
     build: ./
-    command: ./wait-for-postgres.sh db-expect-artist ./expect-artist
+    command: ./wait-for-postgres.sh ${DB_HOST} ./expect-artist ${DB_USERNAME} ${DB_NAME}
     ports:
       - 80:80
     depends_on:
       - db-expect-artist
+      - migrate-expect-artist
     environment:
+      - DB_PORT=${DB_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
+      - TOKEN=${TOKEN}
 
   db-expect-artist:
     restart: always
     image: postgres:13
+    
     volumes:
     - ./.database/postgres/data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+      
     ports:
       - 5432:5432
+  
+  migrate-expect-artist:
+    image: migrate/migrate
+    volumes:
+    - ./schema:/schema
+    command: ["-path", "/schema", "-database",  "postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable", "up"]
+    depends_on:
+      - db-expect-artist

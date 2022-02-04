@@ -29,13 +29,14 @@ func main() {
 	fmt.Println(config.Db.Password)
 	fmt.Println(config.BotURL)
 	fmt.Println(config.BotToken)
+	// return
 	db, err := NewPostgresDB(config.Db)
 	if err != nil {
 		log.Fatalf("failed to initialize db: %s", err.Error())
 	}
 	repos := repositories.NewRepository(db)
 	services := services.NewService(repos)
-	seeder := seeders.NewSeed(repos)
+	seeder := seeders.NewSeed(repos, services)
 	err = seeder.SeedData()
 	bot := InitTelegramBot(config, services)
 	bot.Start()

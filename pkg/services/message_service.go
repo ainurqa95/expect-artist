@@ -6,21 +6,35 @@ import (
 )
 
 type MessageService struct {
+	userManager           UserManager
 	messageRepository     repositories.MessageRepository
 	messageTypeRepository repositories.MessageTypeRepository
 }
 
 func NewMessageService(
+	userManager UserManager,
 	messageRepository repositories.MessageRepository,
 	messageTypeRepository repositories.MessageTypeRepository,
 ) *MessageService {
 	return &MessageService{
+		userManager:           userManager,
 		messageRepository:     messageRepository,
 		messageTypeRepository: messageTypeRepository,
 	}
 }
 
-func (messageService *MessageService) SaveMessage(messageTypeCode string, chatId int64, userId int, text string) (entities.Message, error) {
+func (messageService *MessageService) SaveUserMessageToStorage(chatId int64, textMessage string, messageTypeCode string) (entities.User, error) {
+	user, err := messageService.userManager.FindOrCreateUser(chatId)
+	if err != nil {
+		return user, err
+	}
+
+	_, err = messageService.saveMessage(messageTypeCode, chatId, user.Id, textMessage)
+
+	return user, err
+}
+
+func (messageService *MessageService) saveMessage(messageTypeCode string, chatId int64, userId int, text string) (entities.Message, error) {
 	messageType, err := messageService.messageTypeRepository.FindByCode(messageTypeCode)
 
 	message := entities.Message{
