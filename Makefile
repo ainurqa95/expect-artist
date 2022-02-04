@@ -7,8 +7,8 @@ build:
 run: build
 	./.main
 
-# docker-image:
-# 	docker build -t telegram-bot-pocket:v1.0 .
+docker-build:
+	docker-compose build expect-artist
 
-# start-container:
-# 	docker run --env-file .env -p 80:80 telegram-bot-pocket:v1.0
+up-container:
+	docker-compose up expect-artist

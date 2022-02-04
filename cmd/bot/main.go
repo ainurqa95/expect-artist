@@ -22,14 +22,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(config.Db.Name)
-	fmt.Println(config.Db.Host)
-	fmt.Println(config.Db.Port)
-	fmt.Println(config.Db.UserName)
-	fmt.Println(config.Db.Password)
-	fmt.Println(config.BotURL)
-	fmt.Println(config.BotToken)
-	// return
 	db, err := NewPostgresDB(config.Db)
 	if err != nil {
 		log.Fatalf("failed to initialize db: %s", err.Error())
